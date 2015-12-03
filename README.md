@@ -27,6 +27,13 @@ $ go get -u github.com/karan/vocabulary
 
 ## Usage
 
+### Get API keys
+
+1. [Big Huge Thesaurus](http://words.bighugelabs.com/getkey.php)
+  * Required for `Antonyms`
+2. [Wordnik](http://developer.wordnik.com/)
+  * Required for `PartOfSpeech`
+
 Calling `vocabulary.Word()` with any word as a string will return a `vocabulary.Word` type object that has all possible information about it.
 
 Or if you just want selective information, you can call individual functions passing in a word (`vocabulary.Meanings("hallucination")`).

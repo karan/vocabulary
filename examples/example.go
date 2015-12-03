@@ -12,8 +12,19 @@ import (
 
 
 func main() {
+  // Set the API keys
+  // Some functions require API keys. Refer to docs.
+  // If API keys are not required, simple set empty strings as config:
+  c := &vocabulary.Config{BigHugeLabsApiKey: "", WordnikApiKey:""}
+
+  // Instantiate a Vocabulary object with your config
+  v, err := vocabulary.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
   // Create a new vocabulary.Word object, and collects all possible information.
-  word, err := vocabulary.Word("vuvuzela")
+  word, err := v.Word("vuvuzela")
   if err != nil {
     log.Fatal(err)
   }
@@ -25,7 +36,7 @@ func main() {
   fmt.Println(word.UsageExample)
 
   // Get just the synonyms
-  synonyms, err := vocabulary.Synonyms("area")
+  synonyms, err := v.Synonyms("area")
   if err != nil {
     log.Fatal(err)
   }
@@ -33,9 +44,9 @@ func main() {
   fmt.Println(synonyms)
 
   // Can also use:
-  //  vocabulary.Meanings(word)
-  //  vocabulary.Antonyms(word)
-  //  vocabulary.PartOfSpeech(word)
-  //  vocabulary.UsageExample(word)
+  //  v.Meanings(word)
+  //  v.Antonyms(word)
+  //  v.PartOfSpeech(word)
+  //  v.UsageExample(word)
 
 }
