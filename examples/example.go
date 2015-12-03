@@ -29,19 +29,20 @@ func main() {
     log.Fatal(err)
   }
 
-  fmt.Println(word.Meanings)
-  fmt.Println(word.Synonyms)
-  fmt.Println(word.Antonyms)
-  fmt.Println(word.PartOfSpeech)
-  fmt.Println(word.UsageExample)
+  fmt.Printf("word.Word = %s \n", word.Word)
+  fmt.Printf("word.Meanings = %s \n", word.Meanings)
+  fmt.Printf("word.Synonyms = %s \n", word.Synonyms)
+  fmt.Printf("word.Antonyms = %s \n", word.Antonyms)
+  fmt.Printf("word.PartOfSpeech = %s \n", word.PartOfSpeech)
+  fmt.Printf("word.UsageExample = %s \n", word.UsageExample)
 
-  // Get just the synonyms
-  synonyms, err := v.Synonyms("area")
-  if err != nil {
-    log.Fatal(err)
-  }
+  // // Get just the synonyms
+  // synonyms, err := v.Synonyms("area")
+  // if err != nil {
+  //   log.Fatal(err)
+  // }
 
-  fmt.Println(synonyms)
+  // fmt.Println(synonyms)
 
   // Can also use:
   //  v.Meanings(word)
