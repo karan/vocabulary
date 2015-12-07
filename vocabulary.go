@@ -5,13 +5,14 @@ import (
   "fmt"
   "io/ioutil"
   "net/http"
+  "strings"
 )
 
 // -----------------------------------------------------------------------------
 
 const meaningApiUrl string = "https://glosbe.com/gapi/translate?from=en&dest=en&format=json&pretty=true&phrase=%s"
 const synonymsApiUrl string = "https://glosbe.com/gapi/translate?from=en&dest=en&format=json&pretty=true&phrase=%s"
-const antonymsApiUrl string = "http://words.bighugelabs.com/api/2/%s/%s/json"
+const antonymsApiUrl string = "http://words.bighugelabs.com/api/2/%s/%s/text"
 const partOfSpeechApiUrl string = "http://api.wordnik.com/v4/word.json/{word}/{action}?api_key=%s"
 const usageExampleApiUrl string = "http://api.urbandictionary.com/v0/define?term=%s"
 
@@ -43,6 +44,16 @@ func makeReq(url string) ([]byte, error) {
       // fmt.Printf("%s\n", string(contents))
       return contents, nil
   }
+}
+
+// Returns true if a is present in list
+func stringInSlice(a string, list []string) bool {
+  for _, b := range list {
+    if b == a {
+      return true
+    }
+  }
+  return false
 }
 
 // -----------------------------------------------------------------------------
@@ -102,10 +113,16 @@ func (v Vocabulary) Word(w string) (Word, error) {
     return Word{}, err
   }
 
+  antonyms, err := v.Antonyms(w)
+  if err != nil {
+    return Word{}, err
+  }
+
   return Word{
     Word: w,
     Meanings: meanings,
     Synonyms: synonyms,
+    Antonyms: antonyms,
   }, nil
 }
 
@@ -164,30 +181,26 @@ func (v Vocabulary) Synonyms(w string) ([]string, error) {
 }
 
 // Returns a list of strings representing the antonyms of the given word.
-// func (v Vocabulary) Synonyms(w string) ([]string, error) {
-//   contents, err := makeReq(fmt.Sprintf(antonymsApiUrl, w))
-//   if err != nil {
-//     return []string{}, err
-//   }
+func (v Vocabulary) Antonyms(w string) ([]string, error) {
+  contents, err := makeReq(fmt.Sprintf(antonymsApiUrl, v.c.BigHugeLabsApiKey, w))
+  if err != nil {
+    return []string{}, err
+  }
 
-//   var glosbe Glosbe
-//   err = json.Unmarshal(contents, &glosbe)
+  if string(contents) == "" {
+    return []string{}, nil
+  }
 
-//   if err != nil || glosbe.Result != "ok" {
-//     return []string{}, err
-//   }
-
-//   var result []string
-//   for _, tuc_raw := range glosbe.Tuc[1:] {
-//     var gp GlosbePhrase
-//     err = json.Unmarshal(tuc_raw, &gp)
-//     if err != nil {
-//       return []string{}, err
-//     }
-//     result = append(result, gp.Thing.Text)
-//   }
-//   return result, nil
-// }
+  var result []string
+  lines := strings.Split(string(contents), "\n")
+  for _, line := range lines {
+    b := strings.Split(line, "|")
+    if len(b) == 3 && b[1] == "ant" && !stringInSlice(b[2], result) {
+      result = append(result, b[2])
+    }
+  }
+  return result, nil
+}
 
 
 // -----------------------------------------------------------------------------

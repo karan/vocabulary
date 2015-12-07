@@ -36,14 +36,23 @@ func main() {
   fmt.Printf("word.PartOfSpeech = %s \n", word.PartOfSpeech)
   fmt.Printf("word.UsageExample = %s \n", word.UsageExample)
 
-  // // Get just the synonyms
+  // Get just the synonyms
   // synonyms, err := v.Synonyms("area")
   // if err != nil {
   //   log.Fatal(err)
   // }
-
   // for _, s := range synonyms {
   //   fmt.Println(s)
+  // }
+  //
+
+  // Get just the antonyms
+  // ants, err := v.Antonyms("love")
+  // if err != nil {
+  //   log.Fatal(err)
+  // }
+  // for _, a := range ants {
+  //   fmt.Println(a)
   // }
 
   // Can also use:
