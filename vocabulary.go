@@ -13,7 +13,7 @@ import (
 const meaningApiUrl string = "https://glosbe.com/gapi/translate?from=en&dest=en&format=json&pretty=true&phrase=%s"
 const synonymsApiUrl string = "https://glosbe.com/gapi/translate?from=en&dest=en&format=json&pretty=true&phrase=%s"
 const antonymsApiUrl string = "http://words.bighugelabs.com/api/2/%s/%s/text"
-const partOfSpeechApiUrl string = "http://api.wordnik.com/v4/word.json/{word}/{action}?api_key=%s"
+const partOfSpeechApiUrl string = "http://api.wordnik.com/v4/word.json/%s/definitions?api_key=%s"
 const usageExampleApiUrl string = "http://api.urbandictionary.com/v0/define?term=%s"
 
 // -----------------------------------------------------------------------------
@@ -68,8 +68,8 @@ type Config struct {
 
 // Represents the part of speech of a word
 type PartOfSpeech struct {
-  POS  string // The part of speech for the word
-  ExampleUsage  string  // An example usage for the word in POS
+  POS  string     `json:"partOfSpeech"` // The part of speech for the word
+  ExampleUsage  string   `json:"text"` // An example usage for the word in POS
 }
 
 // Represents a word with all its information
@@ -118,11 +118,23 @@ func (v Vocabulary) Word(w string) (Word, error) {
     return Word{}, err
   }
 
+  pos, err := v.PartOfSpeech(w)
+  if err != nil {
+    return Word{}, err
+  }
+
+  ue, err := v.UsageExample(w)
+  if err != nil {
+    return Word{}, err
+  }
+
   return Word{
     Word: w,
     Meanings: meanings,
     Synonyms: synonyms,
     Antonyms: antonyms,
+    PartOfSpeech: pos,
+    UsageExample: ue,
   }, nil
 }
 
@@ -197,6 +209,45 @@ func (v Vocabulary) Antonyms(w string) ([]string, error) {
     b := strings.Split(line, "|")
     if len(b) == 3 && b[1] == "ant" && !stringInSlice(b[2], result) {
       result = append(result, b[2])
+    }
+  }
+  return result, nil
+}
+
+// Returns a list of PartOfSpeech structs representing the POS of the given word.
+func (v Vocabulary) PartOfSpeech(w string) ([]PartOfSpeech, error) {
+  contents, err := makeReq(fmt.Sprintf(partOfSpeechApiUrl, w, v.c.WordnikApiKey))
+  if err != nil {
+    return []PartOfSpeech{}, err
+  }
+
+  var result []PartOfSpeech
+  err = json.Unmarshal(contents, &result)
+  if err != nil {
+    return []PartOfSpeech{}, err
+  }
+  return result, nil
+}
+
+// Returns a list of strings representing usage examples of the given word.
+func (v Vocabulary) UsageExample(w string) ([]string, error) {
+  contents, err := makeReq(fmt.Sprintf(usageExampleApiUrl, w))
+  if err != nil {
+    return []string{}, err
+  }
+
+  var resp UrbanDictResp
+  err = json.Unmarshal(contents, &resp)
+  if err != nil {
+    return []string{}, err
+  }
+
+  var result []string
+  for _, thing := range resp.Things {
+    if thing.ThumbsUp > 2 * thing.ThumbsDown {
+      text := strings.Replace(thing.Example, "\r", " ", -1)
+      text = strings.Replace(thing.Example, "\n", " ", -1)
+      result = append(result, text)
     }
   }
   return result, nil

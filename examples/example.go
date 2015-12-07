@@ -55,6 +55,15 @@ func main() {
   //   fmt.Println(a)
   // }
 
+  // Get just the part of speech
+  // pos, err := v.PartOfSpeech("love")
+  // if err != nil {
+  //   log.Fatal(err)
+  // }
+  // for _, a := range pos {
+  //   fmt.Println(a)
+  // }
+
   // Can also use:
   //  v.Meanings(word)
   //  v.Antonyms(word)

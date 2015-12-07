@@ -24,3 +24,13 @@ type Glosbe struct {
 }
 
 // -----------------------------------------------------------------------------
+
+type UrbanDictThing struct {
+  Example  string  `json:"example"`
+  ThumbsUp  int `json:"thumbs_up"`
+  ThumbsDown  int `json:"thumbs_down"`
+}
+
+type UrbanDictResp struct {
+  Things  []UrbanDictThing  `json:"list"`
+}
