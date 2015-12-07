@@ -3,7 +3,6 @@ package vocabulary
 import (
   "encoding/json"
   "fmt"
-  // "log"
   "io/ioutil"
   "net/http"
 )
@@ -86,6 +85,13 @@ func (v Vocabulary) Word(w string) (Word, error) {
     return Word{}, Error("word must be non-empty string")
   }
 
+  if v.c.BigHugeLabsApiKey == "" {
+    return Word{}, Error("BigHugeLabsApiKey required.")
+  }
+  if v.c.WordnikApiKey == "" {
+    return Word{}, Error("WordnikApiKey required.")
+  }
+
   meanings, err := v.Meanings(w)
   if err != nil {
     return Word{}, err
@@ -156,6 +162,32 @@ func (v Vocabulary) Synonyms(w string) ([]string, error) {
   }
   return result, nil
 }
+
+// Returns a list of strings representing the antonyms of the given word.
+// func (v Vocabulary) Synonyms(w string) ([]string, error) {
+//   contents, err := makeReq(fmt.Sprintf(antonymsApiUrl, w))
+//   if err != nil {
+//     return []string{}, err
+//   }
+
+//   var glosbe Glosbe
+//   err = json.Unmarshal(contents, &glosbe)
+
+//   if err != nil || glosbe.Result != "ok" {
+//     return []string{}, err
+//   }
+
+//   var result []string
+//   for _, tuc_raw := range glosbe.Tuc[1:] {
+//     var gp GlosbePhrase
+//     err = json.Unmarshal(tuc_raw, &gp)
+//     if err != nil {
+//       return []string{}, err
+//     }
+//     result = append(result, gp.Thing.Text)
+//   }
+//   return result, nil
+// }
 
 
 // -----------------------------------------------------------------------------
