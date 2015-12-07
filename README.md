@@ -2,7 +2,7 @@
 
 [![](http://i.imgur.com/RJSJHlA.png)](https://xkcd.com/1443/)
 
-An English-language dictionary and thesaurus in a Go package.
+An English-language dictionary and thesaurus in a Go package by [Karan Goel](https://twitter.com/karangoel).
 
 Golang port of [the Python counterpart](https://github.com/prodicus/vocabulary/).
 
