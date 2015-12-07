@@ -1,5 +1,7 @@
 # Vocabulary
 
+[![](http://i.imgur.com/RJSJHlA.png)](https://xkcd.com/1443/)
+
 An English-language dictionary and thesaurus in a Go package.
 
 Golang port of [the Python counterpart](https://github.com/prodicus/vocabulary/).
@@ -7,8 +9,8 @@ Golang port of [the Python counterpart](https://github.com/prodicus/vocabulary/)
 For a given word, `Vocabulary` will give you:
 
 * **Meaning**
-  * **Synonyms**
-  * **Antonyms**
+* **Synonyms**
+* **Antonyms**
 * **Part of speech**: whether the word is a noun, interjection or an adverb et el
 * **Usage example**: a quick example on how to use the word in a sentence
 
