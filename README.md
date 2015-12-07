@@ -4,6 +4,8 @@
 
 An English-language dictionary and thesaurus in a Go package by [Karan Goel](https://twitter.com/karangoel).
 
+[![Build Status](https://drone.io/github.com/karan/vocabulary/status.png)](https://drone.io/github.com/karan/vocabulary/latest)
+
 Golang port of [the Python counterpart](https://github.com/prodicus/vocabulary/).
 
 For a given word, `Vocabulary` will give you:
