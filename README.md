@@ -84,9 +84,23 @@ func main() {
 
 ## Tests
 
+Create `examples/api_keys.go` with your API keys:
+
 ```go
+package main
+
+const (
+  BigHugeLabsApiKey = "xxxx"
+  WordnikApiKey     = "xxxx"
+)
+
+```
+
+Then, to run the tests, use this command:
+
+```bash
 $ go test
-# TODO: test results here
+PASS
 ```
 
 ## Bugs
