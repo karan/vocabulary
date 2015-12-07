@@ -91,9 +91,15 @@ func (v Vocabulary) Word(w string) (Word, error) {
     return Word{}, err
   }
 
+  synonyms, err := v.Synonyms(w)
+  if err != nil {
+    return Word{}, err
+  }
+
   return Word{
     Word: w,
     Meanings: meanings,
+    Synonyms: synonyms,
   }, nil
 }
 
@@ -111,11 +117,43 @@ func (v Vocabulary) Meanings(w string) ([]string, error) {
     return []string{}, err
   }
 
-  var result []string
-  for _, gm := range glosbe.Tuc[0].Meanings {
-    result = append(result, gm.Text)
+  var meanings GlosbeMeanings
+  err = json.Unmarshal(glosbe.Tuc[0], &meanings)
+  if err != nil {
+    return []string{}, err
   }
 
+  var result []string
+  for _, gt := range meanings.Things {
+    result = append(result, gt.Text)
+  }
+
+  return result, nil
+}
+
+// Returns a list of strings representing the synonyms of the given word.
+func (v Vocabulary) Synonyms(w string) ([]string, error) {
+  contents, err := makeReq(fmt.Sprintf(synonymsApiUrl, w))
+  if err != nil {
+    return []string{}, err
+  }
+
+  var glosbe Glosbe
+  err = json.Unmarshal(contents, &glosbe)
+
+  if err != nil || glosbe.Result != "ok" {
+    return []string{}, err
+  }
+
+  var result []string
+  for _, tuc_raw := range glosbe.Tuc[1:] {
+    var gp GlosbePhrase
+    err = json.Unmarshal(tuc_raw, &gp)
+    if err != nil {
+      return []string{}, err
+    }
+    result = append(result, gp.Thing.Text)
+  }
   return result, nil
 }
 

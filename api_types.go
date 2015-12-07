@@ -1,18 +1,26 @@
 package vocabulary
 
+import (
+  "encoding/json"
+)
+
 // -----------------------------------------------------------------------------
 
-type GlosbeMeaning struct {
+type GlosbeThing struct {
   Text  string  `json:"text"`
 }
 
-type GlosbeTuc struct {
-  Meanings []GlosbeMeaning  `json:"meanings"`
+type GlosbeMeanings struct {
+  Things []GlosbeThing  `json:"meanings"`
+}
+
+type GlosbePhrase struct {
+  Thing GlosbeThing  `json:"phrase"`
 }
 
 type Glosbe struct {
   Result  string  `json:"result"`
-  Tuc  []GlosbeTuc  `json:"tuc"`
+  Tuc     []json.RawMessage  `json:"tuc"`
 }
 
 // -----------------------------------------------------------------------------
