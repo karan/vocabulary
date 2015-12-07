@@ -10,7 +10,6 @@ import (
   "github.com/karan/vocabulary"
 )
 
-
 func main() {
   // Set the API keys
   // Some functions require API keys. Refer to docs.
@@ -65,9 +64,6 @@ func main() {
   // }
 
   // Can also use:
-  //  v.Meanings(word)
-  //  v.Antonyms(word)
-  //  v.PartOfSpeech(word)
   //  v.UsageExample(word)
 
 }
