@@ -1,6 +1,7 @@
 package vocabulary
 
 import (
+  "encoding/json"
   "fmt"
   // "log"
   "io/ioutil"
@@ -27,21 +28,21 @@ func (e Error) Error() string {
 
 // -----------------------------------------------------------------------------
 
-// Makes an http GET request and returns the string contents
-func makeReq(url string) (string, error) {
+// Makes an http GET request and returns the byte array contents
+func makeReq(url string) ([]byte, error) {
   response, err := http.Get(url)
   if err != nil {
       fmt.Printf("%s", err)
-      return "", Error(fmt.Sprintf("%s", err))
+      return nil, Error(fmt.Sprintf("%s", err))
   } else {
       defer response.Body.Close()
       contents, err := ioutil.ReadAll(response.Body)
       if err != nil {
           fmt.Printf("%s", err)
-          return "", Error(fmt.Sprintf("%s", err))
+          return nil, Error(fmt.Sprintf("%s", err))
       }
-      fmt.Printf("%s\n", string(contents))
-      return string(contents), nil
+      // fmt.Printf("%s\n", string(contents))
+      return contents, nil
   }
 }
 
@@ -103,9 +104,19 @@ func (v Vocabulary) Meanings(w string) ([]string, error) {
     return []string{}, err
   }
 
-  // TODO: parse JSON, too much to do here
+  var glosbe Glosbe
+  err = json.Unmarshal(contents, &glosbe)
 
-  return []string{contents}, nil
+  if err != nil || glosbe.Result != "ok" {
+    return []string{}, err
+  }
+
+  var result []string
+  for _, gm := range glosbe.Tuc[0].Meanings {
+    result = append(result, gm.Text)
+  }
+
+  return result, nil
 }
 
 
